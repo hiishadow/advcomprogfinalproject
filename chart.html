@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+    <header>
+        <title>Fetch Example</title>
+    </header>
+    <body>
+        <div>
+            <canvas id="temperatureChart"></canvas>
+        </div>
+        <ul id="tempList"></ul>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            async function logWeather() {
+                const response = await fetch("http://www.7timer.info/bin/api.pl?lon=100.5352&lat=13.7401&product=civil&output=json");
+                const weatherData = await response.json();
+                console.log(weatherData);
+                console.log(weatherData.product);
+                const dataSeries = weatherData.dataseries;
+                var ul = document.getElementById("tempList");
+                dataSeries.forEach(tp => {
+                    // console.log(weatherData.init+'+'+tp.timepoint+': '+tp.temp2m);
+                    var li = document.createElement('li');
+                    li.textContent = weatherData.init+  '+'+tp.timepoint+': '+tp.temp2m;
+                    // ul.appendChild(li);
+                });
+                const temp2m = dataSeries.map(tp => tp.temp2m);
+                const labels = dataSeries.map(tp => weatherData.init+'+'+tp.timepoint);
+                const rh2m = dataSeries.map(tp => parseInt(tp.rh2m.slice(0,-1)));
+                // console.log(rh2m);
+                const ctx = document.getElementById('temperatureChart');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Temperature',
+                        data: temp2m,
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Relative Humidity',
+                        data: rh2m,
+                        borderWidth: 1
+                    }]
+                    },
+                    options: {
+                    scales: {
+                        y: {
+                        beginAtZero: true
+                        }
+                    }
+                    }
+                });
+                // console.log(temp2m);
+                // console.log(labels);
+            }
+            logWeather();
+        </script>
+    </body>
+</html>
