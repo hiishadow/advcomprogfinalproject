@@ -1,6 +1,7 @@
 // script1.js
 let myChart1;
 let myChart2; // Declare myChart outside the function to keep track of the instance
+let peopleCount = 0;
 
 document.getElementById("myForm").addEventListener("submit", function (event) {
   // Prevent the default form submission
@@ -9,22 +10,66 @@ document.getElementById("myForm").addEventListener("submit", function (event) {
   // Get the input value when the form is submitted
   const nameInput = document.getElementById("nameInput").value;
   console.log(nameInput);
-
+  const regionInput = document.getElementById("regionInput").value;
+  console.log(regionInput);
   // Call functions that use the nameInput value
-  getGender(nameInput);
-  getNationality(nameInput);
+  peopleCount = 0;
+  async function processData(nameInput) {
+    // Use Promise.all to execute the functions concurrently
+    const [genderData, nationalityData, ageData] = await Promise.all([
+      getGender(nameInput),
+      getNationality(nameInput),
+      getAge(nameInput),
+    ]);
+
+    // After all the functions are completed, you can use the results
+    console.log(genderData);
+    console.log(nationalityData);
+    console.log(ageData);
+
+    // Continue with the remaining code
+    console.log(peopleCount);
+    document.getElementById("numberOfPeople").textContent = Math.round(
+      peopleCount / 3
+    );
+    console.log(peopleCount / 3);
+  }
+
+  // Call the processData function with the nameInput
+  processData(nameInput);
 });
 
-async function getAge() {
+async function getAge(nameInput) {
   const response = await fetch("https://api.agify.io/?name=" + nameInput);
   const ageData = await response.json();
-  // Handle age data
+  document.querySelector(".age-info").classList.remove("hidden");
+
+  if (ageData.count == 0) {
+    window.alert("No age information available for this name.");
+
+    console.log("love");
+    document.querySelector(".age-info").classList.add("hidden");
+
+    return (document.getElementById("ageData").textContent =
+      "Data is not available");
+  }
+  document.getElementById("ageData").textContent = ageData.age;
+  peopleCount += ageData.count;
 }
 // ...
 
 async function getGender(nameInput) {
   const response = await fetch("https://api.genderize.io/?name=" + nameInput);
   const genderData = await response.json();
+  document.querySelector(".gender-chart").classList.remove("hidden");
+
+  if (genderData.count == 0) {
+    window.alert("No gender information available for this name");
+
+    document.querySelector(".gender-chart").classList.add("hidden");
+    return;
+  }
+  peopleCount += genderData.count;
 
   let data;
 
@@ -84,11 +129,19 @@ async function getGender(nameInput) {
     },
   });
 }
-
 async function getNationality(nameInput) {
   const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
   const response = await fetch("https://api.nationalize.io/?name=" + nameInput);
   const nationalityData = await response.json();
+  document.querySelector(".region-chart").classList.remove("hidden");
+
+  if (nationalityData.count == 0) {
+    window.alert("No nationalities information available for this name.");
+    console.log("No national");
+    document.querySelector(".region-chart").classList.add("hidden");
+    return;
+  }
+  peopleCount += nationalityData.count;
 
   var sum = nationalityData.country.reduce(
     (total, country) => total + country.probability,
@@ -133,6 +186,13 @@ async function getNationality(nameInput) {
             },
           },
         },
+      },
+      onClick: function (event, elements) {
+        console.log(elements[0].index);
+        if (elements.length > 0) {
+          const clickedCountry = nationalityData.country[elements[0].index].country_id;
+          console.log(`Clicked on country: ${clickedCountry}`);
+        }
       },
     },
   });
