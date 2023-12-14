@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Name Quiz</title>
+    <!-- You can link to an external CSS file for styling, or include inline styles here -->
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        text-align: center;
+        margin: 20px;
+      }
+
+      .quiz-container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+      }
+
+      .age-info,
+      .gender-chart,
+      .region-chart {
+        margin-top: 20px;
+      }
+
+      canvas {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+      }
+
+      .name-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .name-input {
+        padding: 10px;
+        margin: 5px;
+        width: 80%;
+      }
+
+      .submit-button {
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="quiz-container">
+      <h2>How Well Do You Know Your Name?</h2>
+
+      <form class="name-form" id="myForm">
+        <label for="nameInput">Enter only letters for Name:</label>
+        <input
+          type="text"
+          id="nameInput"
+          name="nameInput"
+          pattern="[A-Za-z]+"
+          title="Please enter only letters"
+          required
+          class="name-input"
+        />
+
+        <label for="regionInput">Enter only letters for Region:</label>
+        <input
+          type="text"
+          id="regionInput"
+          name="regionInput"
+          pattern="[A-Za-z]+"
+          title="Please enter only letters"
+          required
+          class="name-input"
+        />
+
+        <button type="submit" class="submit-button">Submit</button>
+      </form>
+
+      <div class="age-info">
+        <h3>Age Data</h3>
+        <p id = ageData >This is where age data will be displayed.</p>
+      </div>
+
+      <div class="gender-chart">
+        <h3>Gender Graph</h3>
+        <canvas id="pieChart1" width="400" height="200"></canvas>
+      </div>
+
+      <div class="region-chart">
+        <h3>Region Graph</h3>
+        <canvas id="pieChart2" width="400" height="200"></canvas>
+      </div>
+    </div>
+
+    <script src="script1.js"></script>
+  </body>
+</html>
