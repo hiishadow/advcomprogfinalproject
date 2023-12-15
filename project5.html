@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Name Quiz</title>
+    <!-- You can link to an external CSS file for styling, or include inline styles here -->
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to right, #74ebd5, #acb6e5);
+        color: #333;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+        transition: background-color 0.3s;
+      }
+      .quiz-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #ffffff;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        position: relative; /* Ensure relative positioning for absolute child elements */
+      }
+
+      h2 {
+        color: #0056b3;
+        font-size: 2.2em;
+        margin-bottom: 20px;
+      }
+
+      .name-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .name-input,
+      .submit-button {
+        width: 90%;
+        padding: 12px;
+        margin-top: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        font-size: 1em;
+      }
+
+      .name-input {
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      .submit-button {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .submit-button:hover {
+        background-color: #218838;
+      }
+
+      .number-of-people-box {
+        margin-top: 30px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      }
+      .showing-area {
+        position: relative;
+        width: 100%; /* Adjust the width as needed, considering padding and margins */
+        height: 800px;
+
+        /* background-color: #b91ebb; */
+        margin-top: 30px; /* Adjust the margin as needed */
+        /* border-radius: 10px; */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      }
+      .age {
+        position: absolute;
+        display: flex;
+        flex-direction: column; /* Add this line to set flex-direction to column */
+        justify-content: center; /* Update this line to align items to flex-start */
+        align-items: center;
+
+        top: 0;
+        right: 0;
+        width: calc(50% - 32px); /* Adjust for padding and border */
+        height: calc(30% - 32px); /* Adjust for padding and border */
+        /* max-height: 400px; */
+        /* margin-top: 30px; */
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      }
+      .gender-chart {
+        position: absolute;
+        display: flex;
+        flex-direction: column; /* Add this line to set flex-direction to column */
+        justify-content: center; /* Update this line to align items to flex-start */
+        align-items: center;
+
+        bottom: 0;
+        right: 0;
+        width: calc(50% - 32px); /* Adjust for padding and border */
+        height: calc(70% - 32px); /* Adjust for padding and border */
+        /* max-height: 400px; */
+        /* margin-top: 30px; */
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .region-chart {
+        position: absolute;
+        display: flex;
+        flex-direction: column; /* Add this line to set flex-direction to column */
+        justify-content: center; /* Update this line to align items to flex-start */
+        align-items: center;
+
+        top: 0;
+        left: 0;
+        width: calc(100% - 30px); /* Adjust for padding and border */
+        height: calc(100% - 30px); /* Adjust for padding and border */
+        /* max-height: 800px; */
+
+        /* margin-top: 30px; */
+        padding: 15px;
+        /* background-color: #268aed; */
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      }
+      .region-chart h3 {
+        margin-top: 0; /* Add this line to reset the default margin */
+        margin-bottom: 10px;
+      }
+
+      canvas {
+        /* margin-top: 15px; */
+        /* border-radius: 5px; */
+        /* background-color: #74ebd5; */
+        max-height: calc(100% - 30px);
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* Styling for inline display of number and age boxes */
+      .statistics-flex {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .statistics-flex > div {
+        flex-basis: calc(50% - 20px);
+        max-width: calc(50% - 20px);
+      }
+
+      @media (max-width: 600px) {
+        .statistics-flex > div {
+          flex-basis: 100%;
+          max-width: 100%;
+        }
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="quiz-container">
+      <h2>Your name around the world!</h2>
+
+      <form class="name-form" id="myForm">
+        <label for="nameInput">Enter only letters for Name:</label>
+        <input
+          type="text"
+          id="nameInput"
+          name="nameInput"
+          pattern="[A-Za-z]+"
+          title="Please enter only letters"
+          required
+          class="name-input"
+        />
+
+        <button type="submit" class="submit-button">Submit</button>
+      </form>
+
+      <!-- Number of People Box -->
+      <div class="number-of-people-box hidden">
+        <label>Average Number of People</label>
+        <p id="numberOfPeople">0</p>
+      </div>
+      <div class="showing-area hidden">
+        <div class="region-chart hidden" id="regionChart">
+          <h3>Select the country</h3>
+          <canvas id="pieChart2" width="300" height="150"></canvas>
+        </div>
+
+        <div class="gender-chart hidden">
+          <h3>Gender Graph</h3>
+          <canvas id="pieChart1" width="300" height="150"></canvas>
+        </div>
+
+        <div class="age hidden">
+          <h3>Average Age</h3>
+          <p id="ageData">This is where age data will be displayed.</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="script5.js"></script>
+  </body>
+</html>
