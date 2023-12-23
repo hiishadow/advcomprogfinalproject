@@ -24,6 +24,9 @@ async function getNationality(nameInput) {
     return;
   }
 
+  document.querySelector(".age").classList.add("hidden");
+  document.querySelector(".gender-chart").classList.add("hidden");
+  document.getElementById("regionChart").style.width = "calc(100% - 40px)";
   document.querySelector(".region-chart").classList.remove("hidden");
   document.querySelector(".number-of-people-box").classList.remove("hidden");
   document.querySelector(".showing-area").classList.remove("hidden");
